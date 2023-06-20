@@ -1,0 +1,33 @@
+server:
+  port: 8082
+spring:
+  mail:
+    host: smtp.163.com
+    protocol: smtp
+    default-encoding: utf-8
+    password: rzmhccuuqbbdbajb
+    username: 947261090@qq.com
+    port: 25
+  rabbitmq:
+    username: guest
+    password: guest
+    host: 127.0.0.1
+    port: 5672
+    listener:
+      simple:
+        #开启手动确认
+        acknowledge-mode: manual
+  redis:
+    timeout: 10000ms
+    #服务器地址
+    host: 127.0.0.1
+    #服务器端口
+    port: 6379
+    #数据库
+    database: 0
+    lettuce:
+      pool:
+        max-active: 1024
+        max-wait: 10000ms
+        max-idle: 200
+        min-idle: 5

@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzn.server.mapper.EmployeeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.yzn.server.pojo.Employee">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="gender" property="gender" />
+        <result column="birthday" property="birthday" />
+        <result column="idCard" property="idCard" />
+        <result column="wedlock" property="wedlock" />
+        <result column="nationId" property="nationId" />
+        <result column="nativePlace" property="nativePlace" />
+        <result column="politicId" property="politicId" />
+        <result column="email" property="email" />
+        <result column="phone" property="phone" />
+        <result column="address" property="address" />
+        <result column="departmentId" property="departmentId" />
+        <result column="jobLevelId" property="jobLevelId" />
+        <result column="posId" property="posId" />
+        <result column="engageForm" property="engageForm" />
+        <result column="tiptopDegree" property="tiptopDegree" />
+        <result column="specialty" property="specialty" />
+        <result column="school" property="school" />
+        <result column="beginDate" property="beginDate" />
+        <result column="workState" property="workState" />
+        <result column="workID" property="workID" />
+        <result column="contractTerm" property="contractTerm" />
+        <result column="conversionTime" property="conversionTime" />
+        <result column="notWorkDate" property="notWorkDate" />
+        <result column="beginContract" property="beginContract" />
+        <result column="endContract" property="endContract" />
+        <result column="workAge" property="workAge" />
+        <result column="salaryId" property="salaryId" />
+    </resultMap>
+    <!-- 通用
+    <resultMap id="EmployeeInfo" type="com.yzn.server.pojo.Employee" extends="BaseResultMap">
+        <association javaType="com.yzn.server.pojo.Nation" property="nation" >
+            <id column="nid" property="id"/>
+            <result column="nname" property="name" />
+        </association>
+        <association javaType="com.yzn.server.pojo.PoliticsStatus" property="politicsStatus" >
+            <id column="pid" property="id"/>
+            <result column="pname" property="name" />
+        </association>
+        <association javaType="com.yzn.server.pojo.Department" property="department" >
+            <id column="did" property="id"/>
+            <result column="dname" property="name" />
+        </association>
+        <association javaType="com.yzn.server.pojo.Joblevel" property="joblevel" >
+            <id column="jid" property="id"/>
+            <result column="jname" property="name" />
+        </association>
+        <association javaType="com.yzn.server.pojo.Position" property="position" >
+            <id column="ptid" property="id"/>
+            <result column="ptname" property="name" />
+        </association>
+
+    </resultMap>
+    -->
+    <resultMap id="EmployeeInfo" type="com.yzn.server.pojo.Employee" extends="BaseResultMap">
+        <association property="nation" javaType="com.yzn.server.pojo.Nation">
+            <id column="nid" property="id" />
+            <result column="nname" property="name" />
+        </association>
+        <association property="politicsStatus" javaType="com.yzn.server.pojo.PoliticsStatus">
+            <id column="pid" property="id" />
+            <result column="pname" property="name" />
+        </association>
+        <association property="department" javaType="com.yzn.server.pojo.Department">
+            <id column="did" property="id" />
+            <result column="dname" property="name" />
+        </association>
+        <association property="joblevel" javaType="com.yzn.server.pojo.Joblevel">
+            <id column="jid" property="id" />
+            <result column="jname" property="name" />
+        </association>
+        <association property="position" javaType="com.yzn.server.pojo.Position">
+            <id column="posid" property="id" />
+            <result column="posname" property="name" />
+        </association>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, gender, birthday, idCard, wedlock, nationId,
+        nativePlace, politicId, email, phone, address, departmentId,
+        jobLevelId, posId, engageForm, tiptopDegree, specialty,
+        school, beginDate, workState, workID, contractTerm, conversionTime,
+        notWorkDate, beginContract, endContract, workAge, salaryId
+    </sql>
+
+    <update id="updateEmpEsid" parameterType="integer">
+        UPDATE t_employee e
+        SET e.salaryId = #{eSid}
+        WHERE
+            e.id = #{eid}
+    </update>
+
+    <!--分页获取所有员工
+    <select id="getEmployeePage" resultMap="EmployeeInfo">
+        select
+            e.*,
+            n.id nid,
+            n.`name` nname,
+            p.id pid,
+            p.`name` pname,
+            d.id did,
+            d.`name` dname,
+            j.id jid,
+            j.`name` jname,
+            pt.id ptid,
+            pt.`name` ptname
+            from
+            t_employee e,
+            t_nation n,
+            t_politics_status p,
+            t_department d,
+            t_joblevel j,
+            t_position pt
+            <where>
+                e.nationId = n.id
+                and e.politicId = p.id
+                and e.departmentId = d.id
+                and e.jobLevelId = j.id
+                and e.posId = pt.id
+                <if test="employee.name != null and employee.name != ''">
+                    and e.`name` LIKE CONCAT('%',#{employee.name},'%')
+                </if>
+                <if test="employee.politicId != null and employee.politicId > 0">
+                    and e.politicId = #{employee.politicId}
+                </if>
+                <if test="employee.nationId != null and employee.nationId > 0">
+                    and e.nationId = #{employee.nationId}
+                </if>
+                <if test="employee.jobLevelId != null and employee.jobLevelId > 0">
+                    and e.jobLevelId = #{employee.jobLevelId}
+                </if>
+                <if test="employee.posId != null and employee.posId > 0">
+                    and e.posId = #{employee.posId}
+                </if>
+                <if test="employee.engageForm != null and employee.engageForm > 0">
+                    and e.engageForm = #{employee.engageForm}
+                </if>
+                <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                    and e.beginDate BETWEEN #{startDate} and #{endDate}
+                </if>
+                order by e.id
+            </where>
+    </select>
+    -->
+    <!-- 获取所有员工(分页) -->
+    <select id="getEmployeeByPage" resultMap="EmployeeInfo">
+        SELECT
+        e.*,
+        n.id AS nid,
+        n.`name` AS nname,
+        p.id AS pid,
+        p.`name` AS pname,
+        d.id AS did,
+        d.`name` AS dname,
+        j.id AS jid,
+        j.`name` AS jname,
+        pos.id AS posid,
+        pos.`name` AS posname
+        FROM
+        t_employee e,
+        t_nation n,
+        t_politics_status p,
+        t_department d,
+        t_joblevel j,
+        t_position pos
+        WHERE
+        e.nationId = n.id
+        AND e.politicId = p.id
+        AND e.departmentId = d.id
+        AND e.jobLevelId = j.id
+        AND e.posId = pos.id
+        <if test="null!=employee.name and ''!=employee.name">
+            AND e.`name` LIKE CONCAT( '%', #{employee.name}, '%' )
+        </if>
+        <if test="null!=employee.politicId">
+            AND e.politicId = #{employee.politicId}
+        </if>
+        <if test="null!=employee.nationId">
+            AND e.nationId = #{employee.nationId}
+        </if>
+        <if test="null!=employee.jobLevelId">
+            AND e.jobLevelId = #{employee.jobLevelId}
+        </if>
+        <if test="null!=employee.posId">
+            AND e.posId = #{employee.posId}
+        </if>
+        <if test="null!=employee.engageForm and ''!=employee.engageForm">
+            AND e.engageForm = #{employee.engageForm}
+        </if>
+        <if test="null!=employee.departmentId">
+            AND e.departmentId = #{employee.departmentId}
+        </if>
+        <if test="null!=beginDateScope and 2==beginDateScope.length">
+            AND e.beginDate BETWEEN #{beginDateScope[0]} AND #{beginDateScope[1]}
+        </if>
+        ORDER BY
+        e.id
+    </select>
+
+
+    <!--获取员工最大编号-->
+    <select id="getMaxWorkID" resultType="string">
+        SELECT
+            max( workID )
+        FROM
+            t_employee;
+    </select>
+
+    <!--导出员工表格-->
+    <select id="getEmployeeList" parameterType="integer" resultMap="EmployeeInfo">
+        SELECT
+            e.*,
+            n.id nid,
+            n.`name` nname,
+            p.id pid,
+            p.`name` pname,
+            d.id did,
+            d.`name` dname,
+            j.id jid,
+            j.`name` jname,
+            pt.id ptid,
+            pt.`name` ptname
+        FROM
+            t_employee e,
+            t_nation n,
+            t_politics_status p,
+            t_department d,
+            t_joblevel j,
+            t_position pt
+        WHERE
+            e.nationId = n.id
+            AND e.politicId = p.id
+            AND e.departmentId = d.id
+            AND e.jobLevelId = j.id
+            AND e.posId = pt.id
+            <if test="id != null and id > 0">
+            AND e.id = #{id}
+            </if>
+        ORDER BY
+            e.id
+    </select>
+
+    <!--查询一些列添加需要的ID-->
+    <select id="getIdSelectNationByName" parameterType="Map" resultMap="EmployeeInfo">
+        SELECT
+            n.id nid,
+            p.id pid,
+            d.id did,
+            j.id jid,
+            pt.id ptid
+        FROM
+            t_nation n,
+            t_politics_status p,
+            t_department d,
+            t_joblevel j,
+            t_position pt
+        WHERE
+            n.`name` = #{nationName}
+            AND p.`name` = #{politicsStatusName}
+            AND d.`name` = #{departmentName}
+            AND j.`name` = #{joblevelName}
+            AND pt.`name` = #{positionName}
+    </select>
+
+    <resultMap id="salaryColumnList" type="com.yzn.server.pojo.Employee" extends="EmployeeInfo">
+        <!-- property 这个是 Employee 中的字段变量，javaType 里面是该字段具体的对象类型-->
+        <association property="s" javaType="com.yzn.server.pojo.Salary">
+            <!--column sql语句查出来的字段，property 是 association 解析对象 salary 的字段-->
+            <id column="sid" property="id"/>
+            <result column="sbasicSalary" property="basicSalary" />
+            <result column="sbonus" property="bonus" />
+            <result column="lunchSalary" property="lunchSalary" />
+            <result column="strafficSalary" property="trafficSalary" />
+            <result column="sallSalary" property="allSalary" />
+            <result column="spensionBase" property="pensionBase" />
+            <result column="spensionPer" property="pensionPer" />
+            <result column="screateDate" property="createDate" />
+            <result column="smedicalBase" property="medicalBase" />
+            <result column="smedicalPer" property="medicalPer" />
+            <result column="saccumulationFundBase" property="accumulationFundBase" />
+            <result column="saccumulationFundPer" property="accumulationFundPer" />
+            <result column="sname" property="name" />
+        </association>
+    </resultMap>
+
+    <!--获取所有员工和员工账套信息-->
+    <select id="getAllEmpSalary" resultMap="salaryColumnList">
+        SELECT
+            e.*,
+            s.id sid,
+            s.basicSalary sbasicSalary,
+            s.bonus sbonus,
+            s.lunchSalary lunchSalary,
+            s.trafficSalary strafficSalary,
+            s.allSalary sallSalary,
+            s.pensionBase spensionBase,
+            s.pensionPer spensionPer,
+            s.createDate screateDate,
+            s.medicalBase smedicalBase,
+            s.medicalPer smedicalPer,
+            s.accumulationFundBase saccumulationFundBase,
+            s.accumulationFundPer saccumulationFundPer,
+            s.`name` sname 
+        FROM
+            t_employee e,
+            t_salary s 
+        WHERE
+            e.salaryId = s.id 
+        ORDER BY
+            e.id
+    </select>
+
+    <select id="getEmp" resultType="com.yzn.server.pojo.Employee">
+        SELECT * FROM t_employee WHERE id = #{eid}
+    </select>
+
+    <select id="getEmployeeNumbers" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM t_employee
+    </select>
+    <select id="getSexNumbers" resultType="java.lang.Integer">
+        select count(gender) from t_employee WHERE gender="男"
+    </select>
+
+    <select id="getAge1Numbers" resultType="java.lang.Integer">
+        SELECT
+            count(*) AS 人数
+        FROM
+            t_employee
+        WHERE
+            YEAR (birthday)
+            between 1997 AND 2022
+    </select>
+
+    <select id="getAge2Numbers" resultType="java.lang.Integer">
+        SELECT
+        count(*) AS 人数
+        FROM
+        t_employee
+        WHERE
+        YEAR (birthday)
+        between 1987 AND 1996
+    </select>
+
+
+    <resultMap type="com.yzn.server.pojo.Statistics" id="Numbers" >
+        <result property="value" column="number" />
+        <result property="name" column="typename" />
+    </resultMap>
+
+    <select id="getTiptopDegreeNumbers"  resultMap="Numbers">
+        SELECT tiptopDegree as typename,count(*) as number FROM t_employee group by tiptopDegree
+    </select>
+    <select id="getDepartmentNumbers" resultMap="Numbers">
+        SELECT departmentId as typename,count(*) as number FROM t_employee group by departmentId
+    </select>
+
+</mapper>

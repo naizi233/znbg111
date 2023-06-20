@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzn.server.mapper.SalaryEmployeeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.yzn.server.pojo.SalaryEmp">
+        <id column="id" property="id" />
+        <result column="eid" property="eid" />
+        <result column="salaryEmployee" property="salaryEmployee" />
+        <result column="seDate" property="seDate" />
+        <result column="name" property="name" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, eid, bonus, salaryEmployee, seDate,name
+    </sql>
+
+    <select id="getAllSalaryEmp" resultType="com.yzn.server.pojo.SalaryEmp">
+        SELECT
+            a.*,b.`name`
+        FROM
+            t_salary_emp a,t_employee b
+        WHERE
+            MONTH(a.seDate)=#{month}
+          AND a.eid=b.id
+    </select>
+
+</mapper>

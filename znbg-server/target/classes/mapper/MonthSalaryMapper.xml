@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzn.server.mapper.MonthSalaryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.yzn.server.pojo.MonthSalary">
+        <id column="id" property="id" />
+        <result column="type" property="type" />
+        <result column="money" property="money" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="msDate" property="msDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, type, money, status, remark,msDate
+    </sql>
+
+    <select id="getAllMonthSalary" resultType="com.yzn.server.pojo.MonthSalary">
+        SELECT
+            *
+        FROM
+            t_month_salary
+        WHERE
+            MONTH (msDate) = #{month}
+    </select>
+
+    <select id="getArea" resultType="com.yzn.server.pojo.AreaEcharts">
+        SELECT
+            SUM(money) as value,
+            type as name
+        FROM
+            t_month_salary
+        WHERE
+            MONTH(msDate)=3
+        GROUP BY type;
+    </select>
+    <select id="getMoneySum" resultType="com.yzn.server.pojo.AreaEcharts">
+        SELECT
+            SUM(money) AS value,
+	MONTH (msDate) AS name
+        FROM
+            t_month_salary
+        GROUP BY
+            MONTH (msDate)
+        ORDER BY name;
+    </select>
+</mapper>

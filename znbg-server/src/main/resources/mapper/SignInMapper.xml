@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzn.server.mapper.SignInMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.yzn.server.pojo.SignIn">
+        <id column="eid" property="eid" />
+        <result column="number" property="number" />
+        <result column="lastDate" property="lastDate" />
+        <result column="numberLate" property="numberLate" />
+        <result column="name" property="name" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        eid, number, lastDate,numberLate,name
+    </sql>
+
+    <select id="getByadminId" resultType="com.yzn.server.pojo.SignIn">
+        SELECT
+            ts.*, ta.`name`
+        FROM
+            t_signin ts,
+            t_admin ta
+        WHERE
+            ts.eid = ta.id
+          AND
+            ta.id=#{eid}
+    </select>
+
+    <select id="getAll" resultType="com.yzn.server.pojo.SignIn">
+        SELECT ts.*,ta.`name` FROM t_signin ts,t_admin ta WHERE ta.id=ts.eid
+    </select>
+    <select id="getEidByAdminId" resultType="java.lang.Integer">
+        SELECT
+            te.id
+        FROM
+            t_admin ta,
+            t_employee te
+        WHERE
+            ta.id=#{adminId}
+          AND
+            ta.id=te.userId
+    </select>
+
+</mapper>
